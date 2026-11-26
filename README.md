@@ -27,3 +27,6 @@ Version 0.6 (stående, sværere)
 ## v0.11
 - Hækkeløb: Løb-knap + Hop-knap, uret starter ved første tryk
 - Højdespring og længdespring: automatisk tilløb, kun én Hop-knap der skal times
+
+## v0.11.1
+- Uret står på 0,00 under nedtælling og indtil første tryk (100 m, svømning, hækkeløb)

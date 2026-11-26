@@ -9,3 +9,6 @@ Version 0.6 (stående, sværere)
 - Rigtige lyde (CC0, se lyde/CREDITS.md), lydknap
 - Niveau-vælger (Let/Normal/Svær/Auto)
 - Løb: boost og læ bag modstander; hækkeløb: lavt/højt spring; længde-/højdespring: teknik i luften
+
+## v0.8
+- Kast: træk-og-slip med fingeren (retning + kraft) i stedet for tre bjælker; boost fjernet

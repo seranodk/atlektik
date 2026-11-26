@@ -23,3 +23,7 @@ Version 0.6 (stående, sværere)
 
 ## v0.10.1
 - Løb/svømning: uret og feltet starter først, når man trykker første gang efter startskuddet
+
+## v0.11
+- Hækkeløb: Løb-knap + Hop-knap, uret starter ved første tryk
+- Højdespring og længdespring: automatisk tilløb, kun én Hop-knap der skal times

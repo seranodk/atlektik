@@ -19,7 +19,7 @@ canvas{display:block;position:absolute;left:0;top:0}
 <script>
 (()=>{
 'use strict';
-const VERSION='0.10.1';
+const VERSION='0.11';
 const HALL_URL='https://seranodk.github.io/';
 const W=390,WH=390,OUT='#2b2140';let SH=720,H=390;const RX=146;
 const FONT='"Arial Rounded MT Bold","Trebuchet MS","DejaVu Sans",Arial,sans-serif';
@@ -462,20 +462,20 @@ const HURD=[[0,{lean:12,l:[-.5,-1.0,1.15,.7],a:[1.6,1.8,-1.0,-.4],face:'f',hair:
  [.75,{lean:20,bob:-4,l:[1.0,.2,.55,.25],a:[1.0,1.5,-1.0,-.6],face:'f',hair:.2}],
  [1,{lean:14,l:[.9,-.4,-.4,-1.0],a:[-.6,.5,.7,1.7],face:'n',hair:.3}]];
 const Hurdles={
-  enter(){this.t=0;this.state='cd';this.d=[0,0,0];this.v=[0,0,0];this.ja=[-1,-1,-1];this.nx=[0,0,0];this.st=[0,0,0];this.fin=[null,null,null];this.fx=[0,0,0];this.dn=[[],[],[]];this.dT={};this.t0=0;this.res=null;this.resT=0;this.hint=5;this.lc=[0,0,0];crowdEx(.25);
+  enter(){this.t=0;this.state='cd';this.d=[0,0,0];this.v=[0,0,0];this.ja=[-1,-1,-1];this.nx=[0,0,0];this.st=[0,0,0];this.fin=[null,null,null];this.fx=[0,0,0];this.dn=[[],[],[]];this.dT={};this.t0=0;this.res=null;this.resT=0;this.hint=5;this.vp=0;this.go=false;this.lc=[0,0,0];crowdEx(.25);
     const L=lvlEff(),dd=(dm()-1)*.5;this.bo=0;this.pT=0;this.jdu=[.6,.6,.6];this.jh=[78,78,78];this.slow=[0,0,0];this.jt=['h','h','h'];this.base=[7.7+dd+L*.1+Math.random()*0.5,7.9,7.7+dd+L*.1+Math.random()*0.5];this.jd=[[],[],[]];for(const i of [0,2])for(let k=0;k<10;k++){const r=Math.random();this.jd[i].push(r<Math.max(.06,.2-.025*L)?(Math.random()<.5?5.5:0.25):1.6+Math.random()*1.2);}},
-  tap(x,y,side){if(this.state==='run'&&this.ja[1]<0){const low=side==='l';this.jdu[1]=low?.5:.64;this.jh[1]=low?62:90;this.jt[1]=low?'l':'h';this.ja[1]=0.001;Snd.play('swish',.5);}},act(){this.tap(0,0,'r');},
+  tap(){},run(){if(this.state==='run'){this.go=true;this.vp+=.5;}},jump(){if(this.state==='run'&&this.go&&this.ja[1]<0){this.jdu[1]=.6;this.jh[1]=78;this.jt[1]='h';this.ja[1]=0.001;Snd.play('swish',.5);}},act(){this.jump();},
   update(dt){
     this.t+=dt;const t=this.t;if(this.hint>0&&this.state==='run')this.hint-=dt;
     if(this.state==='cd'&&t>=2.8){this.state='run';this.t0=t;puff(80,260,6,'#fff',60);Snd.play('gun',.8);}
-    if(this.state==='run'||this.state==='fin'){const rt=t-this.t0;
+    if(this.state==='run'||this.state==='fin'){if(this.state==='run'&&!this.go)this.t0=t;const rt=t-this.t0;if(this.state==='run')this.vp=Math.max(0,this.vp*Math.exp(-.4*dt));
       for(let i=0;i<3;i++){
-        let v=(this.base[i]+(i===1?this.bo:0))*(1-Math.exp(-rt/0.9));if(this.st[i]>0){v*=0.35;this.st[i]-=dt;}if(this.slow[i]>0){v*=.82;this.slow[i]-=dt;}
+        let v=i===1?(this.go?this.vp+this.bo*.8:0):this.base[i]*(1-Math.exp(-rt/0.9));if(i!==1&&!this.go)v=0;if(this.st[i]>0){v*=0.35;this.st[i]-=dt;}if(this.slow[i]>0){v*=.82;this.slow[i]-=dt;}
         if(this.fin[i]!=null)v=Math.max(0,this.v[i]-4*dt);this.v[i]=v;
         if(this.ja[i]>=0){this.ja[i]+=dt;if(this.ja[i]>this.jdu[i]){this.ja[i]=-1;if(i===1||Math.random()<.5)puff(RX+(this.d[i]-this.d[1])*16-8,[238,292,346][i]-3,3,'#ffe8d0',50,4);}}
         if(i!==1&&this.ja[i]<0&&this.nx[i]<10&&HP[this.nx[i]]-this.d[i]<=this.jd[i][this.nx[i]]&&this.fin[i]==null){const low=Math.random()<.4;this.jdu[i]=low?.5:.64;this.jh[i]=low?62:90;this.jt[i]=low?'l':'h';this.ja[i]=0.001;}
         const nd=this.d[i]+v*dt;const h=this.ja[i]>=0?this.jh[i]*Math.sin(Math.PI*this.ja[i]/this.jdu[i]):0;
-        if(this.nx[i]<10&&nd>=HP[this.nx[i]]){if(i===1&&this.jt[1]==='l'&&h>=58){this.bo=Math.min(1.2,this.bo+.35);this.pT=.8;sparkle(RX,290,10,['#fff','#ffd93d','#7ddc6b']);Snd.play('ding',.7);}if(h>=54&&this.ja[i]>=0&&this.jt[i]==='h')this.slow[i]=.5;if(h<54+(dm()-1)*10){this.dn[i].push(this.nx[i]);this.dT[i+'_'+this.nx[i]]=0;this.st[i]=0.9;if(i===1){this.bo=0;Snd.play('thud',.7);burst(RX,330,8,['#fff','#ff6b9d'],140,120,500,0.6);shake=5;}}this.nx[i]++;}
+        if(this.nx[i]<10&&nd>=HP[this.nx[i]]){if(i===1&&h>=70){this.bo=Math.min(1.2,this.bo+.35);this.pT=.8;sparkle(RX,290,10,['#fff','#ffd93d','#7ddc6b']);Snd.play('ding',.7);}if(h<54+(dm()-1)*10){this.dn[i].push(this.nx[i]);this.dT[i+'_'+this.nx[i]]=0;this.st[i]=0.9;if(i===1){this.bo=0;Snd.play('thud',.7);burst(RX,330,8,['#fff','#ff6b9d'],140,120,500,0.6);shake=5;}}this.nx[i]++;}
         if(nd>=100&&this.fin[i]==null){this.fin[i]=(rt-dt)+(100-this.d[i])/Math.max(v,0.01);this.fx[i]=t;if(i===1){this.state='fin';this.doneAt=t;confetti();crowdEx(1);Snd.play('cheer',.6);}}
         this.d[i]=nd;
         if(this.ja[i]<0&&v>5&&this.fin[i]==null){const hh=Math.floor(nd*1.43/PI);if(hh!==this.lc[i]){this.lc[i]=hh;if(i===1)puff(RX-14,[238,292,346][i]-2,2,'#ffe8d0',50,4);}}}
@@ -506,9 +506,9 @@ const Hurdles={
     let rank=1;for(const i of [0,2]){if(this.fin[i]!=null&&(this.fin[1]==null||this.fin[i]<this.fin[1]))rank++;else if(this.fin[i]==null&&this.fin[1]==null&&this.d[i]>this.d[1]+0.001)rank++;}
     drawParts();vignette();
     hudTop('Hækkeløb',fmt(this.fin[1]!=null?this.fin[1]:rt),'Plads '+rank);menuBtn();
-    if(this.hint>0&&this.state==='run')chip('Lavt = hurtigt og svært · Højt = sikkert',15,98,360,34,'#fff',OUT,13);
-    worldEnd();{const y0=ctlTop(),pw=(W-36)/2,ph=SH-y0-26;button('jl',12,y0+12,pw,ph,'Lavt','#4dabf7','#fff',34,()=>this.tap(0,0,'l'));button('jh',24+pw,y0+12,pw,ph,'Højt','#ff6b9d','#fff',34,()=>this.tap(0,0,'r'));text('hurtigt – svært',12+pw/2,y0+12+ph/2+38,13,'#fff');text('sikkert – langsomt',24+pw+pw/2,y0+12+ph/2+38,13,'#fff');}
-    let [msg,mt]=this.state==='cd'?cdMsg(t):this.state==='run'&&t-this.t0<0.8?['Start!',t-this.t0]:done&&t-this.doneAt<1.5?['Mål!',t-this.doneAt]:this.pT>0?['Perfekt!',.8-this.pT]:[null,0];
+    if(this.hint>0&&this.state==='run')chip(this.go?'Tryk Løb hurtigt · Hop i det grønne':'Tryk Løb for at starte uret!',15,98,360,34,'#fff',OUT,13);
+    worldEnd();{const y0=ctlTop(),pw=(W-36)/2,ph=SH-y0-26;button('jl',12,y0+12,pw,ph,'Løb','#4dabf7','#fff',34,()=>this.run());button('jh',24+pw,y0+12,pw,ph,'Hop','#ff6b9d','#fff',34,()=>this.jump());text('tryk hurtigt',12+pw/2,y0+12+ph/2+38,13,'#fff');text('i det grønne',24+pw+pw/2,y0+12+ph/2+38,13,'#fff');}
+    let [msg,mt]=this.state==='cd'?cdMsg(t):this.state==='run'&&this.go&&t-this.t0<0.8?['Start!',t-this.t0]:done&&t-this.doneAt<1.5?['Mål!',t-this.doneAt]:this.pT>0?['Perfekt!',.8-this.pT]:[null,0];
     bigMsg(msg,mt);if(this.res)resultCard(this.res,this.resT);
   }
 };
@@ -527,13 +527,13 @@ function sandPit(bx,y0,y1){const g=ctx.createLinearGradient(0,y0,0,y1);g.addColo
 const LongJump={
   enter(){this.att=1;this.best=0;this.res=null;this.resT=0;this.hint=5;this.dents=[];this.newAttempt();crowdEx(.3);},
   newAttempt(){this.stam=1;this.wind=(Math.random()*2-1)*2.5*dm();this.air2=false;this.p=0;this.v=0;this.state='run';this.last=null;this.stT=0;this.msg=null;this.meas=0;this.ph=0;this.x0=0;this.x1=0;this.lc=0;parts=[];},
-  tap(x,y,side){if(this.state==='run')runTap(this,side);else if(this.state==='air')this.airTap();},
+  tap(){},
   airTap(){if(this.air2)return;this.air2=true;const s=this.stT/0.85;let f=1;if(s>.62&&s<.9){f=1.07;Snd.play('ding',.6);sparkle(RX,300,8,['#fff','#ffd93d']);}else if(s<.5)f=.96;this.meas*=f;this.x1=BOARD+this.meas;},
-  act(){if(this.state==='run')this.doJump(Math.max(0,BOARD-this.p),false);else if(this.state==='air')this.airTap();},
+  act(){if(this.state==='run')this.doJump(Math.max(0,BOARD-this.p),false);},
   doJump(gap,auto){const qt=timingQ(gap,auto);const jd=Math.max(0.3,0.78*this.v*qt*(1+.025*this.wind)*(1+(Math.random()-.5)*0.04));this.x0=this.p;this.x1=BOARD+jd;this.meas=jd;this.state='air';this.stT=0;puff(RX,344,5,'#ffe8d0',60);},
   update(dt){
     this.stT+=dt;if(this.hint>0&&this.state==='run')this.hint-=dt;
-    if(this.state==='run'){Snd.loop('steps',this.v>3?clamp(this.v/11,0,1)*.2:0);this.v=Math.max(0,this.v*Math.exp(-0.33*dt));this.p+=this.v*dt;this.ph=this.p*1.43;if(this.v>5){const h=Math.floor(this.ph/PI);if(h!==this.lc){this.lc=h;puff(RX-14,346,2,'#ffe8d0',50,4);}}if(this.p>=BOARD){this.state='foul';this.stT=0;this.msg='Overtrådt';crowdEx(.1);Snd.play('buzzer',.7);Snd.play('ooh',.5);shake=3;puff(RX,344,6,'#ffe8d0',60);}this.stam=Math.min(1,this.stam+dt*.16);}
+    if(this.state==='run'){Snd.loop('steps',this.v>3?clamp(this.v/11,0,1)*.2:0);this.v=Math.min(9.8,this.v+dt*5.5);this.p+=this.v*dt;this.ph=this.p*1.43;if(this.v>5){const h=Math.floor(this.ph/PI);if(h!==this.lc){this.lc=h;puff(RX-14,346,2,'#ffe8d0',50,4);}}if(this.p>=BOARD){this.state='foul';this.stT=0;this.msg='Overtrådt';crowdEx(.1);Snd.play('buzzer',.7);Snd.play('ooh',.5);shake=3;puff(RX,344,6,'#ffe8d0',60);}this.stam=Math.min(1,this.stam+dt*.16);}
     else if(this.state==='air'){const s=this.stT/0.85;if(s>=1){this.p=this.x1;this.state='land';this.stT=0;this.msg=fmt(this.meas)+' m';crowdEx(.9);Snd.play('thud',.7);Snd.play('cheer',.4);shake=7;
         for(let i=0;i<34;i++)addP({x:RX+Math.random()*20,y:340,vx:(Math.random()-.3)*230,vy:-60-Math.random()*190,g:620,life:.7+Math.random()*.5,c:['#f4d58d','#e9c46a','#fff3c4','#d9b25f'][i%4],r:2+Math.random()*3});puff(RX,338,10,'#f0dca8',90,7);this.dents.push(this.x1);}else this.p=lerp(this.x0,this.x1,s);}
     else if(this.state==='foul'){if(this.stT>1.8&&!this.res){crowdEx(.3);if(this.att>=3)this.finish();else{this.att++;this.newAttempt();}}}
@@ -559,8 +559,8 @@ const LongJump={
     if(this.state==='run'&&this.v>6){ctx.strokeStyle='rgba(255,255,255,'+clamp((this.v-5.5)/3,0,1)*.75+')';ctx.lineWidth=3;ctx.lineCap='round';for(let k=0;k<3;k++){const w=26+rnd(k+Math.floor(tNow*14))*54,yy=y-76+k*20;ctx.beginPath();ctx.moveTo(RX-60-w,yy);ctx.lineTo(RX-60,yy);ctx.stroke();}}
     chibi(RX,y-4,1.15,LOOKS[0],P,{gy:346});drawParts();vignette();
     hudTop('Længdespring',this.msg||'–','Forsøg '+Math.min(this.att,3)+'/3');menuBtn();
-    if(this.state==='run'){chip('Bræt: '+fmt(Math.max(0,BOARD-this.p),1)+' m',96,54,130,30,'#fff',OUT,13);if(this.hint>0)chip('Hop ved brættet – tryk igen i luften for at svæve',15,98,360,34,'#fff',OUT,13);}
-    chip(windTxt(this.wind),W-112,54,102,30,'#fff',OUT,12);worldEnd();{const aw=this.state==='air'&&!this.air2&&this.stT/0.85>.62&&this.stT/0.85<.9;actBtn('hop',this.state==='air'?'Svæv!':'Hop!',aw?'#7ddc6b':'#ffd93d',aw?'#fff':OUT,32,()=>this.act());}runButtons(true,this.v/10,this.stam);
+    if(this.state==='run'){chip('Bræt: '+fmt(Math.max(0,BOARD-this.p),1)+' m',96,54,130,30,'#fff',OUT,13);if(this.hint>0)chip('Tryk Hop lige før brættet',15,98,360,34,'#fff',OUT,13);}
+    chip(windTxt(this.wind),W-112,54,102,30,'#fff',OUT,12);worldEnd();if(!this.res)actBtn('hop','Hop!','#ffd93d',OUT,44,()=>this.act(),true);
     if(this.res)resultCard(this.res,this.resT);
   }
 };
@@ -578,8 +578,8 @@ const LAY=pz({rot:PI/2,flip:-1,lean:6,l:[1.0,1.5,.8,1.3],a:[1.1,.9,.9,.8],face:'
 const HighJump={
   enter(){this.idx=0;this.tries=0;this.best=0;this.res=null;this.resT=0;this.hint=5;this.reset();crowdEx(.3);},
   reset(){this.x=70;this.state='wait';this.stT=0;this.barDown=-1;this.jt=-1;this.msg=null;this.ok=false;this.lc=0;parts=[];},
-  barPx(){return 46+(HJH[this.idx]-1.5)*120;},tol(){return Math.max(7,32-this.idx*1.7)*(2-dm());},
-  tap(){if(this.state==='jump'&&!this.arch&&this.jt>=0){this.arch=true;const s=this.jt/0.75,bp=this.barPx();this.cap*=(s>.16&&s<.46)?1.12:.92;if(this.e0&&bp<=this.cap)this.ok=true;else this.ok=false;if(s>.16&&s<.46)Snd.play('ding',.6);return;}if(this.state==='run'&&this.jt<0){const e=this.x-XT,tl=this.tol();this.e0=Math.abs(e)<=tl;this.cap=142*(1-.45*Math.abs(e)/tl);this.arch=false;this.ok=this.e0&&this.barPx()<=this.cap;this.apv=this.ok?this.barPx()-8:this.barPx()*.45;this.jx0=this.x;this.jt=0;this.state='jump';Snd.play('swish',.6);this.stT=0;puff(this.x,GY-2,5,'#ffe8d0',60);}},act(){this.tap();},
+  barPx(){return 46+(HJH[this.idx]-1.5)*120;},tol(){return Math.max(6,24-this.idx*1.3)*(2-dm());},
+  tap(){if(this.state==='run'&&this.jt<0){const e=this.x-XT,tl=this.tol();this.e0=Math.abs(e)<=tl;this.cap=142*(1-.45*Math.abs(e)/tl);this.arch=false;this.ok=this.e0&&this.barPx()<=this.cap;this.apv=this.ok?this.barPx()-8:this.barPx()*.45;this.jx0=this.x;this.jt=0;this.state='jump';Snd.play('swish',.6);this.stT=0;puff(this.x,GY-2,5,'#ffe8d0',60);}},act(){this.tap();},
   jx(s){return s<.5?this.jx0+(BX-this.jx0)*(s/.5):BX+(s-.5)/.5*52;},
   update(dt){
     this.stT+=dt;if(this.hint>0&&this.state==='run')this.hint-=dt;
@@ -618,9 +618,9 @@ const HighJump={
     bar();
     drawParts();ctx.restore();vignette();
     hudTop('Højdespring',this.msg||fmt(HJH[this.idx])+' m','Forsøg '+(this.tries+1)+'/3');menuBtn();
-    if(this.hint>0&&(this.state==='run'||this.state==='wait'))chip('Hop i det grønne – tryk igen foran bommen for kropsbue',15,98,360,34,'#fff',OUT,12);
+    if(this.hint>0&&(this.state==='run'||this.state==='wait'))chip('Tryk Hop i det grønne felt',15,98,360,34,'#fff',OUT,14);
     if(this.state==='run'||this.state==='wait')chip('Bom: '+fmt(HJH[this.idx])+' m',96,54,110,30,'#fff',OUT,13);
-    worldEnd();if(!this.res){const aw=this.state==='jump'&&!this.arch&&this.jt/0.75>.16&&this.jt/0.75<.46;actBtn('hjhop',this.state==='jump'?'Bue!':'Hop!',aw?'#7ddc6b':'#ffd93d',aw?'#fff':OUT,40,()=>this.tap(),true);}
+    worldEnd();if(!this.res)actBtn('hjhop','Hop!','#ffd93d',OUT,44,()=>this.tap(),true);
     if(this.res)resultCard(this.res,this.resT);
   }
 };

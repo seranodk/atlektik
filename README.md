@@ -12,3 +12,7 @@ Version 0.6 (stående, sværere)
 
 ## v0.8
 - Kast: træk-og-slip med fingeren (retning + kraft) i stedet for tre bjælker; boost fjernet
+
+## v0.9
+- Kast: bjælke kører frem og tilbage mens man holder – slip i det grønne; holdes for længe kastes tilfældigt
+- Udholdenhed og stønnelyde fjernet

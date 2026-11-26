@@ -19,7 +19,7 @@ canvas{display:block;position:absolute;left:0;top:0}
 <script>
 (()=>{
 'use strict';
-const VERSION='0.7';
+const VERSION='0.7.1';
 const HALL_URL='https://seranodk.github.io/';
 const W=390,WH=390,OUT='#2b2140';let SH=720,H=390;const RX=146;
 const FONT='"Arial Rounded MT Bold","Trebuchet MS","DejaVu Sans",Arial,sans-serif';
@@ -400,7 +400,6 @@ const Race={
   tap(x,y,side){if(side==='l')flash.l=tNow;else flash.r=tNow;if(this.state==='cd'){if(this.t>.4&&!this.fsd){this.fsd=true;this.lock=.9;Snd.play('buzzer',.7);}return;}if(this.state!=='run')return;if(this.lock>0)return;
     if(!this.boost&&!this.fsd&&this.t-this.t0<.35){this.boost=true;this.v[1]+=this.c.add*1.8;}
     const e=(.4+.6*this.stam)*(this.bT>0?1.35:1)*(this.lee?1.06:1);if(this.last!==side)this.v[1]+=this.c.add*e;else this.v[1]=Math.max(0,this.v[1]-this.c.add*0.6);this.stam=Math.max(0,this.stam-(.008+.012*Math.max(0,cad(this)-7))*(this.lee?.6:1));this.last=side;},
-  act(){if(this.state==='run'&&!this.bUsed){this.bUsed=true;this.bT=3;this.stam=Math.max(0,this.stam-.3);Snd.play('whoosh',.7);}},
   draw(){
     worldBegin();const c=this.c,K=c.K,t=this.t,dc=this.d[1],rt=Math.max(0,t-this.t0);const sx=d=>RX+(d-dc)*K;
     const done=this.state==='fin';crowdEx(done?1:this.state==='run'?.55:.25);
@@ -438,7 +437,7 @@ const Race={
     let rank=1;const rt2=this.fin[1]!=null?this.fin[1]:rt;for(const i of [0,2]){if(this.fin[i]!=null&&(this.fin[1]==null||this.fin[i]<this.fin[1]))rank++;else if(this.fin[i]==null&&this.fin[1]==null&&this.d[i]>this.d[1]+0.001)rank++;}
     drawParts();vignette();
     hudTop(c.title,fmt(rt2),'Plads '+rank);menuBtn();
-    if(this.lee&&this.state==='run')chip('I læ',96,54,70,30,'#7ddc6b',OUT,12);worldEnd();actBtn('boost',this.bUsed?(this.bT>0?'BOOST!':'Boost brugt'):'BOOST',this.bUsed?(this.bT>0?'#ff9e4a':'#8d99ae'):'#ffd93d',OUT,26,()=>this.act());runButtons(true,this.v[1]/c.disp,this.stam);
+    if(this.lee&&this.state==='run')chip('I læ',96,54,70,30,'#7ddc6b',OUT,12);worldEnd();runButtons(false,this.v[1]/c.disp,this.stam);
     let [msg,mt]=this.state==='cd'?cdMsg(t):this.fsd&&this.state==='run'&&rt<1.4?['Tyvstart!',rt]:this.state==='run'&&t-this.t0<0.8?['Start!',t-this.t0]:done&&t-this.doneAt<1.5?['Mål!',t-this.doneAt]:[null,0];
     if(this.state==='run'&&t-this.t0<0.25){ctx.fillStyle='rgba(255,255,255,'+(0.6*(1-(t-this.t0)/0.25))+')';ctx.fillRect(0,0,W,H);}
     bigMsg(msg,mt);if(this.res)resultCard(this.res,this.resT);

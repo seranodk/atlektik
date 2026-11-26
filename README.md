@@ -16,3 +16,7 @@ Version 0.6 (stående, sværere)
 ## v0.9
 - Kast: bjælke kører frem og tilbage mens man holder – slip i det grønne; holdes for længe kastes tilfældigt
 - Udholdenhed og stønnelyde fjernet
+
+## v0.10
+- 100 m og svømning: 6 baner med 5 modstandere, hvoraf en er et spøgelse af din egen bedste tid
+- Resultatkort viser forskel mod din bedste; "Din bedste"-bue på kastebanen

@@ -37,3 +37,6 @@ Version 0.6 (stående, sværere)
 ## v0.13
 - 50 m fri (bassinet 50 m) og 110 m hæk (rigtig hækkeafstand), realistiske tider
 - Modstandere i forskellige niveauer (nogle meget hurtige), farttop for spilleren
+
+## v0.14
+- 8 baner (7 modstandere) i 100 m, 50 m fri og 110 m hæk; mindre knapper

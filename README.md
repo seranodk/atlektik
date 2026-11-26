@@ -20,3 +20,6 @@ Version 0.6 (stående, sværere)
 ## v0.10
 - 100 m og svømning: 6 baner med 5 modstandere, hvoraf en er et spøgelse af din egen bedste tid
 - Resultatkort viser forskel mod din bedste; "Din bedste"-bue på kastebanen
+
+## v0.10.1
+- Løb/svømning: uret og feltet starter først, når man trykker første gang efter startskuddet

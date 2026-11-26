@@ -19,7 +19,7 @@ canvas{display:block;position:absolute;left:0;top:0}
 <script>
 (()=>{
 'use strict';
-const VERSION='0.10';
+const VERSION='0.10.1';
 const HALL_URL='https://seranodk.github.io/';
 const W=390,WH=390,OUT='#2b2140';let SH=720,H=390;const RX=146;
 const FONT='"Arial Rounded MT Bold","Trebuchet MS","DejaVu Sans",Arial,sans-serif';
@@ -376,9 +376,9 @@ const Race={
   enter(c){this.c=c;this.t=0;this.d=Array(NL).fill(0);this.v=Array(NL).fill(0);this.fin=Array(NL).fill(null);const L=lvlEff(),dd=(dm()-1)*c.ai0*.22;this.vmax=Array(NL).fill(0);for(const i of OPP)this.vmax[i]=c.ai0+dd+L*c.lv-.25+Math.random()*(c.aiR+.25);const bst=store.get()[c.key];this.gh=bst>0&&bst<c.len/c.ai0*2.2?bst:0;if(this.gh){this.gV=c.len/(bst-c.tau*(1-Math.exp(-bst/c.tau)));}this.bUsed=false;this.bT=0;this.lee=false;this.stam=1;this.lock=0;this.fsd=false;this.boost=false;this.last=null;this.state='cd';this.doneAt=0;this.res=null;this.resT=0;this.t0=0;this.lc=Array(NL).fill(0);this.splashed=Array(NL).fill(0);this.tape=-1;this.tapeY=270;this.fx=Array(NL).fill(0);crowdEx(.25);},
   update(dt){
     const c=this.c;this.t+=dt;const t=this.t;
-    if(this.state==='cd'&&t>=2.8){this.state='run';this.t0=t;puff(80,260,6,'#fff',60);Snd.play('gun',.8);}
+    if(this.state==='cd'&&t>=2.8){this.state='run';this.t0=t;this.tg=t;this.go=false;puff(80,260,6,'#fff',60);Snd.play('gun',.8);}
     if(this.state==='run'||this.state==='fin'){
-      const rt=t-this.t0;if(this.bT>0)this.bT-=dt;this.lee=false;for(const j of OPP){const g=this.d[j]-this.d[1];if(g>.4&&g<2.4&&this.fin[j]==null)this.lee=true;}this.stam=Math.min(1,this.stam+dt*.16);if(this.lock>0)this.lock-=dt;Snd.loop('steps',(!c.swim&&this.fin[1]==null&&this.v[1]>3)?clamp(this.v[1]/11,0,1)*.2:0);
+      if(this.state==='run'&&!this.go)this.t0=t;const rt=t-this.t0;if(this.bT>0)this.bT-=dt;this.lee=false;for(const j of OPP){const g=this.d[j]-this.d[1];if(g>.4&&g<2.4&&this.fin[j]==null)this.lee=true;}this.stam=Math.min(1,this.stam+dt*.16);if(this.lock>0)this.lock-=dt;Snd.loop('steps',(!c.swim&&this.fin[1]==null&&this.v[1]>3)?clamp(this.v[1]/11,0,1)*.2:0);
       for(const i of OPP){this.v[i]=this.fin[i]!=null?Math.max(0,this.v[i]-c.disp*0.4*dt):(i===GH&&this.gh?this.gV*(1-Math.exp(-rt/c.tau)):this.vmax[i]*(1-Math.exp(-rt/c.tau))*(1+0.04*Math.sin(rt*1.7+i*3)));}
       this.v[1]=Math.max(0,this.v[1]*Math.exp(-c.decay*dt));if(this.fin[1]!=null)this.v[1]=Math.max(0,this.v[1]-c.disp*0.3*dt);
       for(let i=0;i<NL;i++){let nd=this.d[i]+this.v[i]*dt;
@@ -402,8 +402,8 @@ const Race={
     if(this.fin[i]!=null){const since=t-this.fx[i];if(v<2.5){return this.rank(i)===1?cheerP(t*1.1+i):tiredP(t+i);}
       const P=runP(ph,spd,0);if(since<.4){P.lean+=22*Math.sin(since/.4*PI);P.a=[-.9,-.6,-1.3,-1.0];}return P;}
     const k=ss(0,.22,rt);const R=runP(ph,spd,Math.max(0,1-rt/1.8));return k<1?mixP(SET,R,k):R;},
-  tap(x,y,side){if(side==='l')flash.l=tNow;else flash.r=tNow;if(this.state==='cd'){if(this.t>.4&&!this.fsd){this.fsd=true;this.lock=.9;Snd.play('buzzer',.7);}return;}if(this.state!=='run')return;if(this.lock>0)return;
-    if(!this.boost&&!this.fsd&&this.t-this.t0<.35){this.boost=true;this.v[1]+=this.c.add*1.8;}
+  tap(x,y,side){if(side==='l')flash.l=tNow;else flash.r=tNow;if(this.state==='cd'){if(this.t>.4&&!this.fsd){this.fsd=true;this.lock=.9;Snd.play('buzzer',.7);}return;}if(this.state!=='run')return;if(this.lock>0)return;this.go=true;
+    if(!this.boost&&!this.fsd&&this.t-this.tg<.35){this.boost=true;this.v[1]+=this.c.add*1.8;}
     const e=(this.bT>0?1.35:1)*(this.lee?1.06:1);if(this.last!==side)this.v[1]+=this.c.add*e;else this.v[1]=Math.max(0,this.v[1]-this.c.add*0.6);this.stam=Math.max(0,this.stam-(.008+.012*Math.max(0,cad(this)-7))*(this.lee?.6:1));this.last=side;},
   draw(){
     worldBegin();const c=this.c,K=c.K,t=this.t,dc=this.d[1],rt=Math.max(0,t-this.t0);const sx=d=>RX+(d-dc)*K;
@@ -442,9 +442,9 @@ const Race={
     let rank=1;const rt2=this.fin[1]!=null?this.fin[1]:rt;for(const i of RV(this)){if(this.fin[i]!=null&&(this.fin[1]==null||this.fin[i]<this.fin[1]))rank++;else if(this.fin[i]==null&&this.fin[1]==null&&this.d[i]>this.d[1]+0.001)rank++;}
     drawParts();vignette();
     hudTop(c.title,fmt(rt2),'Plads '+rank);menuBtn();
-    if(this.lee&&this.state==='run')chip('I læ',264,54,70,30,'#7ddc6b',OUT,12);if(this.gh&&this.state==='run'){const gp=this.d[1]-this.d[GH];chip((gp>=0?'▲ ':'▼ ')+fmt(Math.abs(gp),1)+' m '+(gp>=0?'foran':'bagud')+' bedste',96,54,160,30,gp>=0?'#7ddc6b':'#ff9e9e',OUT,11);}worldEnd();runButtons(false,this.v[1]/c.disp);
-    let [msg,mt]=this.state==='cd'?cdMsg(t):this.fsd&&this.state==='run'&&rt<1.4?['Tyvstart!',rt]:this.state==='run'&&t-this.t0<0.8?['Start!',t-this.t0]:done&&t-this.doneAt<1.5?['Mål!',t-this.doneAt]:[null,0];
-    if(this.state==='run'&&t-this.t0<0.25){ctx.fillStyle='rgba(255,255,255,'+(0.6*(1-(t-this.t0)/0.25))+')';ctx.fillRect(0,0,W,H);}
+    if(this.state==='run'&&!this.go&&!this.fsd)chip('Tryk for at starte uret!',15,98,360,34,'#fff',OUT,14);if(this.lee&&this.state==='run')chip('I læ',264,54,70,30,'#7ddc6b',OUT,12);if(this.gh&&this.state==='run'){const gp=this.d[1]-this.d[GH];chip((gp>=0?'▲ ':'▼ ')+fmt(Math.abs(gp),1)+' m '+(gp>=0?'foran':'bagud')+' bedste',96,54,160,30,gp>=0?'#7ddc6b':'#ff9e9e',OUT,11);}worldEnd();runButtons(false,this.v[1]/c.disp);
+    let [msg,mt]=this.state==='cd'?cdMsg(t):this.fsd&&this.state==='run'&&rt<1.4?['Tyvstart!',rt]:this.state==='run'&&this.go&&t-this.tg<0.8?['Start!',t-this.tg]:done&&t-this.doneAt<1.5?['Mål!',t-this.doneAt]:[null,0];
+    if(this.state==='run'&&t-this.tg<0.25){ctx.fillStyle='rgba(255,255,255,'+(0.6*(1-(t-this.tg)/0.25))+')';ctx.fillRect(0,0,W,H);}
     bigMsg(msg,mt);if(this.res)resultCard(this.res,this.resT);
   }
 };

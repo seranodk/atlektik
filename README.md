@@ -42,3 +42,4 @@ Version 0.6 (stående, sværere)
 - 8 baner (7 modstandere) i 100 m, 50 m fri og 110 m hæk; mindre knapper
 
 - v0.15: Stangspring, Trespring, 4x100 m stafet, Hammerkast; bredere timingvinduer efter simuleringer.
+- v0.16: stafet med ventende holdkammerat i grønt felt; hurtigere løb ved hurtige tryk.

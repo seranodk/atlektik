@@ -19,7 +19,7 @@ canvas{display:block;position:absolute;left:0;top:0}
 <script>
 (()=>{
 'use strict';
-const VERSION='0.11.1';
+const VERSION='0.12';
 const HALL_URL='https://seranodk.github.io/';
 const W=390,WH=390,OUT='#2b2140';let SH=720,H=390;const RX=146;
 const FONT='"Arial Rounded MT Bold","Trebuchet MS","DejaVu Sans",Arial,sans-serif';
@@ -292,7 +292,7 @@ function runButtons(act,bar,bar2){const y0=ctlTop(),lh=tNow-flash.l<0.1,rh=tNow-
   box(12,top+(lh?3:0),w,h,24,lh?'#1971c2':'#4dabf7',4,lh?1:5);text('◀',12+w/2,top+h/2-14+(lh?3:0),34,'#fff');text('Venstre',12+w/2,top+h/2+24+(lh?3:0),17,'#fff');
   box(24+w,top+(rh?3:0),w,h,24,rh?'#c2255c':'#ff6b9d',4,rh?1:5);text('▶',24+w+w/2,top+h/2-14+(rh?3:0),34,'#fff');text('Højre',24+w+w/2,top+h/2+24+(rh?3:0),17,'#fff');}
 function cad(self){const t=tNow;self.tt=(self.tt||[]).filter(x=>t-x<.8);self.tt.push(t);return self.tt.length/.8;}
-function runTap(self,side){if(side==='l')flash.l=tNow;else flash.r=tNow;const e=1;if(self.last!==side)self.v+=0.55*e;else self.v=Math.max(0,self.v-0.3);if(self.stam!=null)self.stam=Math.max(0,self.stam-(.008+.012*Math.max(0,cad(self)-7)));self.last=side;}
+function runTap(self,side){if(side==='l')flash.l=tNow;else flash.r=tNow;const e=1;if(self.last!==side)self.v+=0.8*e;else self.v=Math.max(0,self.v-0.3);if(self.stam!=null)self.stam=Math.max(0,self.stam-(.008+.012*Math.max(0,cad(self)-7)));self.last=side;}
 function lvl(){return store.get().atl_lvl||0;}
 function lvlUp(rank){const b=store.get();let l=b.atl_lvl||0;l=rank===1?Math.min(6,l+1):rank===3?Math.max(0,l-1):l;b.atl_lvl=l;store.set(b);return l;}
 function dmode(){return store.get().atl_diff||'normal';}
@@ -341,8 +341,8 @@ const Menu={
   }
 };
 // ================= RACE (100 m, Svømning) =================
-const RUN={key:'m100',title:'100 m',len:100,K:16,add:.55,decay:.33,disp:11,ai0:8.9,aiR:.9,lv:.12,tau:1.3,swim:false};
-const SWIM={key:'swim',title:'Svømning',len:25,K:34,add:.13,decay:.33,disp:2.6,ai0:2.15,aiR:.3,lv:.035,tau:1.0,swim:true};
+const RUN={key:'m100',title:'100 m',len:100,K:16,add:.8,decay:.33,disp:15,ai0:12,aiR:1.1,lv:.16,tau:1.3,swim:false};
+const SWIM={key:'swim',title:'Svømning',len:25,K:34,add:.19,decay:.33,disp:3.6,ai0:3.05,aiR:.4,lv:.05,tau:1.0,swim:true};
 function swimmer(x,wy,look,ph,v,t,still){
   const moving=!still&&v>.3,sy=wy-5,cyc=2*PI;
   if(moving){ctx.fillStyle='rgba(255,255,255,.8)';for(let k=0;k<5;k++){const wx=x-30-k*15-((t*90)%15);ctx.beginPath();ctx.ellipse(wx,wy+6+(k%2)*5,8-k*.8,2.6,0,0,7);ctx.fill();}}
@@ -397,7 +397,7 @@ const Race={
     this.res={title:'Plads '+rank,line:'Tid '+fmt(my),sub:'Bedste: '+fmt(store.get()[e.key])+' s · Niveau '+L,stars:4-rank,record:rec,again:()=>go(Race,this.c)};},
   rank(i){let r=1;if(this.fin[i]==null)return 0;for(const j of [1,...RV(this)])if(j!==i&&this.fin[j]!=null&&this.fin[j]<this.fin[i])r++;return r;},
   pose(i,ph,v,rt){
-    const t=this.t,spd=v/(this.c.swim?3:9.5);
+    const t=this.t,spd=v/(this.c.swim?4:12.5);
     if(this.state==='cd'){const k=ss(1.4,1.9,t);return mixP(MARK,SET,k);}
     if(this.fin[i]!=null){const since=t-this.fx[i];if(v<2.5){return this.rank(i)===1?cheerP(t*1.1+i):tiredP(t+i);}
       const P=runP(ph,spd,0);if(since<.4){P.lean+=22*Math.sin(since/.4*PI);P.a=[-.9,-.6,-1.3,-1.0];}return P;}
@@ -450,7 +450,7 @@ const Race={
 };
 
 // ================= HÆKKELØB =================
-const HP=[];for(let k=0;k<10;k++)HP.push(14+8.5*k);
+const HP=[];for(let k=0;k<10;k++)HP.push(12+9.2*k);
 function hurdleDraw(x,f,fall){ctx.save();ctx.translate(x,f);let dx=0,rot=0;if(fall>=0){const u=clamp(fall/.45,0,1);rot=1.45*(1-Math.pow(1-u,2));dx=10*u;if(u>=1){const b=fall-.45;rot-=Math.max(0,.18*Math.exp(-b*8)*Math.sin(b*22));}}
   ctx.translate(dx,0);ctx.rotate(rot);ctx.lineCap='round';
   ctx.strokeStyle=OUT;ctx.lineWidth=10;ctx.beginPath();ctx.moveTo(-10,-2);ctx.lineTo(6,-2);ctx.stroke();ctx.strokeStyle='#8d99ae';ctx.lineWidth=5;ctx.stroke();
@@ -463,12 +463,12 @@ const HURD=[[0,{lean:12,l:[-.5,-1.0,1.15,.7],a:[1.6,1.8,-1.0,-.4],face:'f',hair:
  [1,{lean:14,l:[.9,-.4,-.4,-1.0],a:[-.6,.5,.7,1.7],face:'n',hair:.3}]];
 const Hurdles={
   enter(){this.t=0;this.state='cd';this.d=[0,0,0];this.v=[0,0,0];this.ja=[-1,-1,-1];this.nx=[0,0,0];this.st=[0,0,0];this.fin=[null,null,null];this.fx=[0,0,0];this.dn=[[],[],[]];this.dT={};this.t0=0;this.res=null;this.resT=0;this.hint=5;this.vp=0;this.go=false;this.lc=[0,0,0];crowdEx(.25);
-    const L=lvlEff(),dd=(dm()-1)*.5;this.bo=0;this.pT=0;this.jdu=[.6,.6,.6];this.jh=[78,78,78];this.slow=[0,0,0];this.jt=['h','h','h'];this.base=[7.7+dd+L*.1+Math.random()*0.5,7.9,7.7+dd+L*.1+Math.random()*0.5];this.jd=[[],[],[]];for(const i of [0,2])for(let k=0;k<10;k++){const r=Math.random();this.jd[i].push(r<Math.max(.06,.2-.025*L)?(Math.random()<.5?5.5:0.25):1.6+Math.random()*1.2);}},
-  tap(){},run(){if(this.state==='run'){this.go=true;this.vp+=.5;}},jump(){if(this.state==='run'&&this.go&&this.ja[1]<0){this.jdu[1]=.6;this.jh[1]=78;this.jt[1]='h';this.ja[1]=0.001;Snd.play('swish',.5);}},act(){this.jump();},
+    const L=lvlEff(),dd=(dm()-1)*.5;this.bo=0;this.pT=0;this.jdu=[.6,.6,.6];this.jh=[78,78,78];this.slow=[0,0,0];this.jt=['h','h','h'];this.base=[10.2+dd+L*.12+Math.random()*0.6,10.4,10.2+dd+L*.12+Math.random()*0.6];this.jd=[[],[],[]];for(const i of [0,2])for(let k=0;k<10;k++){const r=Math.random();this.jd[i].push(r<Math.max(.06,.2-.025*L)?(Math.random()<.5?5.5:0.25):2.4+Math.random()*1.5);}},
+  tap(){},run(){if(this.state==='run'){this.go=true;this.vp+=.6;}},jump(){if(this.state==='run'&&this.go&&this.ja[1]<0){this.jdu[1]=.6;this.jh[1]=78;this.jt[1]='h';this.ja[1]=0.001;Snd.play('swish',.5);}},act(){this.jump();},
   update(dt){
     this.t+=dt;const t=this.t;if(this.hint>0&&this.state==='run')this.hint-=dt;
     if(this.state==='cd'&&t>=2.8){this.state='run';this.t0=t;puff(80,260,6,'#fff',60);Snd.play('gun',.8);}
-    if(this.state==='run'||this.state==='fin'){if(this.state==='run'&&!this.go)this.t0=t;const rt=t-this.t0;if(this.state==='run')this.vp=Math.max(0,this.vp*Math.exp(-.4*dt));
+    if(this.state==='run'||this.state==='fin'){if(this.state==='run'&&!this.go)this.t0=t;const rt=t-this.t0;if(this.state==='run')this.vp=Math.max(0,this.vp*Math.exp(-.36*dt));
       for(let i=0;i<3;i++){
         let v=i===1?(this.go?this.vp+this.bo*.8:0):this.base[i]*(1-Math.exp(-rt/0.9));if(i!==1&&!this.go)v=0;if(this.st[i]>0){v*=0.35;this.st[i]-=dt;}if(this.slow[i]>0){v*=.82;this.slow[i]-=dt;}
         if(this.fin[i]!=null)v=Math.max(0,this.v[i]-4*dt);this.v[i]=v;
@@ -491,7 +491,7 @@ const Hurdles={
     crowdEx(done?1:this.state==='run'?.55:.25);
     stadiumBG(dc*K);trackGround(dc*K);ctx.fillStyle='#fff';ctx.fillRect(sx(0)-4,192,8,164);finishLine(sx(100));
     const feet=[238,292,346];
-    const nxp=this.nx[1];if(nxp<10&&this.state!=='fin'&&HP[nxp]-this.d[1]<18)zoneStripe(sx(HP[nxp]-3.7),sx(HP[nxp]-1.0),248,50);
+    const nxp=this.nx[1];if(nxp<10&&this.state!=='fin'&&HP[nxp]-this.d[1]<18){const vv=Math.max(6,this.v[1]);zoneStripe(sx(HP[nxp]-vv*.4),sx(HP[nxp]-vv*.2),248,50);}
     if(this.state==='cd'||rt<1)for(let i=0;i<3;i++){const bx=sx(0)-10,by=feet[i]-5;ctx.fillStyle='#3b2f63';ctx.strokeStyle=OUT;ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(bx-14,by+2);ctx.lineTo(bx+6,by-10);ctx.lineTo(bx+10,by+2);ctx.closePath();ctx.fill();ctx.stroke();}
     for(let i=0;i<3;i++)for(let k=0;k<10;k++){const key=i+'_'+k;hurdleDraw(sx(HP[k]),feet[i]-6,this.dT[key]!=null?this.dT[key]:-1);}
     for(let i=0;i<3;i++){const x=sx(this.d[i]),ph=this.d[i]*1.43+i*1.3,air=this.ja[i]>=0,s=air?this.ja[i]/this.jdu[i]:0,h=air?this.jh[i]*Math.sin(Math.PI*s)*0.9:0,spd=this.v[i]/8;
@@ -530,10 +530,10 @@ const LongJump={
   tap(){},
   airTap(){if(this.air2)return;this.air2=true;const s=this.stT/0.85;let f=1;if(s>.62&&s<.9){f=1.07;Snd.play('ding',.6);sparkle(RX,300,8,['#fff','#ffd93d']);}else if(s<.5)f=.96;this.meas*=f;this.x1=BOARD+this.meas;},
   act(){if(this.state==='run')this.doJump(Math.max(0,BOARD-this.p),false);},
-  doJump(gap,auto){const qt=timingQ(gap,auto);const jd=Math.max(0.3,0.78*this.v*qt*(1+.025*this.wind)*(1+(Math.random()-.5)*0.04));this.x0=this.p;this.x1=BOARD+jd;this.meas=jd;this.state='air';this.stT=0;puff(RX,344,5,'#ffe8d0',60);},
+  doJump(gap,auto){const qt=timingQ(gap,auto);const jd=Math.max(0.3,0.66*this.v*qt*(1+.025*this.wind)*(1+(Math.random()-.5)*0.04));this.x0=this.p;this.x1=BOARD+jd;this.meas=jd;this.state='air';this.stT=0;puff(RX,344,5,'#ffe8d0',60);},
   update(dt){
     this.stT+=dt;if(this.hint>0&&this.state==='run')this.hint-=dt;
-    if(this.state==='run'){Snd.loop('steps',this.v>3?clamp(this.v/11,0,1)*.2:0);this.v=Math.min(9.8,this.v+dt*5.5);this.p+=this.v*dt;this.ph=this.p*1.43;if(this.v>5){const h=Math.floor(this.ph/PI);if(h!==this.lc){this.lc=h;puff(RX-14,346,2,'#ffe8d0',50,4);}}if(this.p>=BOARD){this.state='foul';this.stT=0;this.msg='Overtrådt';crowdEx(.1);Snd.play('buzzer',.7);Snd.play('ooh',.5);shake=3;puff(RX,344,6,'#ffe8d0',60);}this.stam=Math.min(1,this.stam+dt*.16);}
+    if(this.state==='run'){Snd.loop('steps',this.v>3?clamp(this.v/11,0,1)*.2:0);this.v=Math.min(12,this.v+dt*7);this.p+=this.v*dt;this.ph=this.p*1.43;if(this.v>5){const h=Math.floor(this.ph/PI);if(h!==this.lc){this.lc=h;puff(RX-14,346,2,'#ffe8d0',50,4);}}if(this.p>=BOARD){this.state='foul';this.stT=0;this.msg='Overtrådt';crowdEx(.1);Snd.play('buzzer',.7);Snd.play('ooh',.5);shake=3;puff(RX,344,6,'#ffe8d0',60);}this.stam=Math.min(1,this.stam+dt*.16);}
     else if(this.state==='air'){const s=this.stT/0.85;if(s>=1){this.p=this.x1;this.state='land';this.stT=0;this.msg=fmt(this.meas)+' m';crowdEx(.9);Snd.play('thud',.7);Snd.play('cheer',.4);shake=7;
         for(let i=0;i<34;i++)addP({x:RX+Math.random()*20,y:340,vx:(Math.random()-.3)*230,vy:-60-Math.random()*190,g:620,life:.7+Math.random()*.5,c:['#f4d58d','#e9c46a','#fff3c4','#d9b25f'][i%4],r:2+Math.random()*3});puff(RX,338,10,'#f0dca8',90,7);this.dents.push(this.x1);}else this.p=lerp(this.x0,this.x1,s);}
     else if(this.state==='foul'){if(this.stT>1.8&&!this.res){crowdEx(.3);if(this.att>=3)this.finish();else{this.att++;this.newAttempt();}}}
@@ -873,7 +873,7 @@ const Javelin={tall:true,
   tap(x,y,side){if(this.state==='run')runTap(this,side);else if(this.state==='aim'&&!this.hold){this.hold=true;this.hT=0;this.pw=0;}},
   up(){if(this.state==='aim'&&this.hold)this.release();},
   act(){if(this.state==='run'){this.qt=timingQ(Math.max(0,LINE-this.p),false);this.pv=this.v;this.state='aim';this.stT=0;this.hold=false;this.pw=0;this.aim=0;}else if(this.state==='aim'){this.hold=true;this.pw=.9;this.m=.9;this.ang=this.aim;this.release();}},
-  release(){this.hold=false;this.an=36+(Math.random()-.5)*8;const pw=clamp(this.pv/10,0,1.15)*(.55+.45*this.m)*(.85+.15*this.pw);this.D=Math.max(8,(18+pw*52*this.qt+(Math.random()-.5)*1.6)*angF(this.an,36,20));this.th=this.ang+(Math.random()-.5)*.03+this.wind*.009;this.zs=this.z0();this.Dx=this.D*Math.sin(this.th);this.Dz=this.zs+this.D*Math.cos(this.th);this.ok=Math.abs(this.th)<=SECJ;this.elev=36+(Math.random()-.5)*6;Snd.play('whoosh',.9);this.state='throw';this.stT=0;this.aT=0;},
+  release(){this.hold=false;this.an=36+(Math.random()-.5)*8;const pw=clamp(this.pv/14,0,1.15)*(.55+.45*this.m)*(.85+.15*this.pw);this.D=Math.max(8,(18+pw*52*this.qt+(Math.random()-.5)*1.6)*angF(this.an,36,20));this.th=this.ang+(Math.random()-.5)*.03+this.wind*.009;this.zs=this.z0();this.Dx=this.D*Math.sin(this.th);this.Dz=this.zs+this.D*Math.cos(this.th);this.ok=Math.abs(this.th)<=SECJ;this.elev=36+(Math.random()-.5)*6;Snd.play('whoosh',.9);this.state='throw';this.stT=0;this.aT=0;},
   update(dt){
     this.stT+=dt;if(this.state==='throw'||this.state==='fly'||this.state==='landed')this.aT+=dt;if(this.hint>0&&this.state==='run')this.hint-=dt;
     if(this.state==='run'){this.v=Math.max(0,this.v*Math.exp(-0.33*dt));this.p+=this.v*dt;this.ph=this.p*1.43;if(this.v>5){const h=Math.floor(this.ph/PI);if(h!==this.lc){this.lc=h;const q=pj(0,0,this.z0());puff(q.x-8,q.y,2,'#d6f5c9',40,4);}}
@@ -923,7 +923,7 @@ const Javelin={tall:true,
     miniMap(this.marks,(this.state==='aim'||this.state==='angle')?this.aim:null,SECJ,100,null);
     if(this.state==='run'){chip('Kastlinje: '+fmt(Math.max(0,LINE-this.p),1)+' m',94,54,150,30,'#fff',OUT,13);if(this.hint>0)chip('Tryk Venstre/Højre – Kast i det grønne',15,SH-256,360,34,'#fff',OUT,13);
       actBtn('throw','Kast!','#ff6b9d','#fff',32,()=>this.act());runButtons(true);
-      box(10,92,230,24,12,'#fff',4,0);ctx.save();rr(12,94,226,20,10);ctx.clip();ctx.fillStyle='#7ddc6b';ctx.fillRect(12,94,226*clamp(this.v/11,0,1),20);ctx.restore();text('Fart',104,104,12,OUT);}
+      box(10,92,230,24,12,'#fff',4,0);ctx.save();rr(12,94,226,20,10);ctx.clip();ctx.fillStyle='#7ddc6b';ctx.fillRect(12,94,226*clamp(this.v/15,0,1),20);ctx.restore();text('Fart',104,104,12,OUT);}
     chip(windTxt(this.wind),10,146,120,28,'#fff',OUT,12);
     if(this.state==='aim'){chip('Træk – slip i det grønne',94,54,190,30,'#fff',OUT,13);slingUI(this.m,this.hold,this.pw);}
 

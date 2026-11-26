@@ -30,3 +30,6 @@ Version 0.6 (stående, sværere)
 
 ## v0.11.1
 - Uret står på 0,00 under nedtælling og indtil første tryk (100 m, svømning, hækkeløb)
+
+## v0.12
+- Markant højere topfart og hurtigere modstandere i 100 m, svømning, hækkeløb, spyd- og længdespring-tilløb

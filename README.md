@@ -33,3 +33,7 @@ Version 0.6 (stående, sværere)
 
 ## v0.12
 - Markant højere topfart og hurtigere modstandere i 100 m, svømning, hækkeløb, spyd- og længdespring-tilløb
+
+## v0.13
+- 50 m fri (bassinet 50 m) og 110 m hæk (rigtig hækkeafstand), realistiske tider
+- Modstandere i forskellige niveauer (nogle meget hurtige), farttop for spilleren
